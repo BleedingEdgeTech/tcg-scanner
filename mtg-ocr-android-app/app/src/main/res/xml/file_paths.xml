@@ -1,0 +1,5 @@
+<resources>
+    <file-paths>
+        <path name="external_files" path="." />
+    </file-paths>
+</resources>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">MTG OCR Scanner</string>
+    <string name="capture_button">Capture</string>
+    <string name="adjust_camera">Adjust Camera</string>
+    <string name="view_card">View Card</string>
+    <string name="search_scryfall">Search on Scryfall</string>
+    <string name="history">History</string>
+    <string name="delete">Delete</string>
+    <string name="export_csv">Export to CSV</string>
+    <string name="no_history">No cards found in history.</string>
+    <string name="card_details">Card Details</string>
+    <string name="name">Name:</string>
+    <string name="language">Language:</string>
+    <string name="collector_number">Collector Number:</string>
+    <string name="set_code">Set Code:</string>
+    <string name="year_of_print">Year of Print:</string>
+    <string name="error_occurred">An error occurred. Please try again.</string>
+</resources>
