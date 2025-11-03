@@ -6,5 +6,11 @@ data class CardDetails(
     val language: String,
     val collectorNumber: String,
     val setCode: String,
-    val yearOfPrint: Int
+    val setName: String,
+    val yearOfPrint: Int,
+    val cardMarketId: Int? = null,
+    // mask fields
+    val foil: Boolean = false,
+    val signed: Boolean = false,
+    val condition: String = "NM"
 )

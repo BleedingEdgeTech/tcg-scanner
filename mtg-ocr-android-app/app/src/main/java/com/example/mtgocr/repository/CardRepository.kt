@@ -15,6 +15,9 @@ class CardRepository(private val cardDao: CardDao) {
     suspend fun getHistorySnapshot(): List<CardDetails> =
         cardDao.getAllOnce().map { it.toDomain() }
 
+    suspend fun getById(id: Long): CardDetails? =
+        cardDao.getById(id)?.toDomain()
+
     suspend fun saveCard(card: CardDetails): Long =
         cardDao.upsert(card.toEntity())
 

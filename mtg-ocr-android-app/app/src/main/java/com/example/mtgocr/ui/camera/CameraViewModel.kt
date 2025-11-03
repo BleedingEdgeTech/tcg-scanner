@@ -17,7 +17,8 @@ data class CameraUiState(
 )
 
 class CameraViewModel(
-    private val captureCardUseCase: CaptureCardUseCase
+    private val captureCardUseCase: CaptureCardUseCase,
+    private val updateCardUseCase: com.example.mtgocr.domain.usecase.UpdateCardUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CameraUiState())
@@ -47,6 +48,28 @@ class CameraViewModel(
 
     fun dismissResult() {
         _uiState.update { CameraUiState() }
+    }
+
+    fun saveCard(card: CardDetails) {
+        viewModelScope.launch {
+            runCatching {
+                updateCardUseCase(card)
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(errorMessage = throwable.message) }
+            }
+        }
+    }
+
+    fun updateCard(updated: com.example.mtgocr.domain.model.CardDetails) {
+        viewModelScope.launch {
+            runCatching {
+                updateCardUseCase(updated)
+            }.onSuccess {
+                _uiState.update { it.copy(cardDetails = updated) }
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(errorMessage = throwable.message) }
+            }
+        }
     }
 
     fun reportError(message: String) {

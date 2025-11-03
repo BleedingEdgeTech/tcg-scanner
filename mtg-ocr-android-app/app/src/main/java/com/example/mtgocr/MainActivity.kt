@@ -18,8 +18,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun openScryfall(cardName: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://scryfall.com/search?q=$cardName"))
-        startActivity(intent)
+    private fun openScryfall(url: String) {
+        runCatching {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
     }
 }

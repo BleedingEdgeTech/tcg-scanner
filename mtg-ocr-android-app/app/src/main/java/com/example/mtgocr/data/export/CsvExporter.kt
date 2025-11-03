@@ -17,7 +17,7 @@ class CsvExporter(private val context: Context) {
 
         return try {
             FileWriter(file).use { writer ->
-                writer.appendLine("Name,Language,Collector Number,Set Code,Year of Print")
+                writer.appendLine("Name,Language,Collector Number,Set Code,Year of Print,Foil,Signed,Condition")
                 cards.forEach { card ->
                     writer.appendLine(
                         listOf(
@@ -25,7 +25,10 @@ class CsvExporter(private val context: Context) {
                             card.language,
                             card.collectorNumber,
                             card.setCode,
-                            card.yearOfPrint.toString()
+                            card.yearOfPrint.toString(),
+                            card.foil.toString(),
+                            card.signed.toString(),
+                            card.condition
                         ).joinToString(separator = ",") { value ->
                             value.replace(",", " ")
                         }

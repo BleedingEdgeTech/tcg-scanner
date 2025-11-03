@@ -21,6 +21,9 @@ interface CardDao {
     @Query("DELETE FROM cards WHERE id = :cardId")
     suspend fun deleteById(cardId: Long)
 
+    @Query("SELECT * FROM cards WHERE id = :cardId LIMIT 1")
+    suspend fun getById(cardId: Long): CardEntity?
+
     @Query("DELETE FROM cards")
     suspend fun clearAll()
 

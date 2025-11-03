@@ -11,6 +11,7 @@ import com.example.mtgocr.ui.history.HistoryScreen
 
 private const val CAMERA_ROUTE = "camera"
 private const val HISTORY_ROUTE = "history"
+private const val EDIT_ROUTE = "edit"
 
 @Composable
 fun MtgOcrNavGraph(
@@ -27,8 +28,21 @@ fun MtgOcrNavGraph(
         composable(HISTORY_ROUTE) {
             HistoryScreen(
                 onNavigateUp = { navController.popBackStack() },
-                onViewCard = { card: CardDetails -> onOpenScryfall(card.name) }
+                onViewCard = { card: CardDetails ->
+                    val id = card.id ?: return@HistoryScreen
+                    navController.navigate("$EDIT_ROUTE/$id")
+                }
             )
+        }
+        composable("$EDIT_ROUTE/{cardId}") { backStackEntry ->
+            val idStr = backStackEntry.arguments?.getString("cardId")
+            val id = idStr?.toLongOrNull()
+            if (id != null) {
+                com.example.mtgocr.ui.edit.EditCardScreen(cardId = id, onNavigateUp = { navController.popBackStack() })
+            } else {
+                // invalid id -> go back
+                navController.popBackStack()
+            }
         }
     }
 }

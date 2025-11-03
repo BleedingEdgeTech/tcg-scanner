@@ -22,6 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import android.net.Uri
+import java.io.OutputStreamWriter
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -45,6 +52,45 @@ fun HistoryScreen(
     val exportPath by viewModel.exportPath.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val context = androidx.compose.ui.platform.LocalContext.current
+
+    // CreateDocument launcher for choosing export location
+    val createDocumentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/csv")
+    ) { uri: Uri? ->
+        if (uri == null) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar("Export cancelled")
+            }
+            return@rememberLauncherForActivityResult
+        }
+
+        // Write CSV to provided Uri
+        coroutineScope.launch {
+            try {
+                context.contentResolver.openOutputStream(uri)?.use { out ->
+                    OutputStreamWriter(out).use { writer ->
+                        writer.append("Name,Language,Collector Number,Set Code,Year of Print\n")
+                        history.forEach { card ->
+                            val line = listOf(
+                                card.name.replace(",", " "),
+                                card.language.replace(",", " "),
+                                card.collectorNumber.replace(",", " "),
+                                card.setCode.replace(",", " "),
+                                card.yearOfPrint.toString()
+                            ).joinToString(",")
+                            writer.append(line).append("\n")
+                        }
+                        writer.flush()
+                    }
+                }
+                snackbarHostState.showSnackbar("Exported to chosen location")
+            } catch (e: Exception) {
+                snackbarHostState.showSnackbar("Export failed: ${e.message}")
+            }
+        }
+    }
 
     LaunchedEffect(exportPath, errorMessage) {
         exportPath?.let { path ->
@@ -72,7 +118,8 @@ fun HistoryScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 if (!isExporting) {
-                    viewModel.exportHistory()
+                    // launch save picker - suggest a filename
+                    createDocumentLauncher.launch("mtg_cards_export.csv")
                 }
             }) {
                 Icon(imageVector = Icons.Default.FileDownload, contentDescription = "Export history")
@@ -80,12 +127,12 @@ fun HistoryScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        HistoryContent(
-            history = history,
-            onDelete = { cardId -> viewModel.deleteCard(cardId) },
-            onView = onViewCard,
-            paddingValues = paddingValues
-        )
+            HistoryContent(
+                history = history,
+                onDelete = { cardId -> viewModel.deleteCard(cardId) },
+                onView = { card -> onViewCard(card) },
+                paddingValues = paddingValues
+            )
     }
 }
 

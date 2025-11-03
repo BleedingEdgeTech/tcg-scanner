@@ -40,6 +40,17 @@ fun HistoryListItem(cardDetails: CardDetails, onDelete: () -> Unit, onView: () -
                 Text(text = "Set: ${cardDetails.setCode}", style = MaterialTheme.typography.bodyMedium)
                 Text(text = "Collector Number: ${cardDetails.collectorNumber}", style = MaterialTheme.typography.bodyMedium)
                 Text(text = "Year: ${cardDetails.yearOfPrint}", style = MaterialTheme.typography.bodyMedium)
+                // mask info
+                Text(text = "Lang: ${cardDetails.language}", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Cond: ${cardDetails.condition}", style = MaterialTheme.typography.bodySmall)
+                Row {
+                    if (cardDetails.foil) {
+                        Text(text = "Foil", style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (cardDetails.signed) {
+                        Text(text = "Signed", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
             }
             IconButton(onClick = onView) {
                 Icon(imageVector = Icons.Default.Visibility, contentDescription = "View Card")

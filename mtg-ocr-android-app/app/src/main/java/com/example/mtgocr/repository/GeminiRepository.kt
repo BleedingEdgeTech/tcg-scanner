@@ -15,7 +15,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 private const val CARD_PROMPT = """
-You are assisting with cataloging Magic: The Gathering cards. Analyze the provided card photo and respond with a single JSON object containing these keys: name, language, collectorNumber, setCode, yearOfPrint. The year must be the four digit printing year. If any value is unknown, set it to an empty string. Only return JSON without additional text.
+You are assisting with cataloging Magic: The Gathering cards. Analyze the provided card photo and respond with a single JSON object containing these keys: name, language, collectorNumber (collector Number is a single number not prefaced with # or anything disregartd the slash and the number after that), setCode, setName, yearOfPrint(found on the card if there are 2 years then it is most likely the later). The year must be the four digit printing year. If any value is unknown, set it to an empty string. Only return JSON without additional text.
 """
 
 class GeminiRepository(
@@ -75,6 +75,7 @@ class GeminiRepository(
 			language = jsonObject.get("language")?.asString.orEmpty(),
 			collectorNumber = jsonObject.get("collectorNumber")?.asString.orEmpty(),
 			setCode = jsonObject.get("setCode")?.asString.orEmpty(),
+            setName = jsonObject.get("setName")?.asString.orEmpty(),
 			yearOfPrint = jsonObject.get("yearOfPrint")?.let { element ->
 				when {
 					element.isJsonNull -> 0

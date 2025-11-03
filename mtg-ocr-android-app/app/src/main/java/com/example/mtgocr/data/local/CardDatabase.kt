@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.mtgocr.data.local.entity.CardEntity
 
-@Database(entities = [CardEntity::class], version = 1, exportSchema = false)
+@Database(entities = [CardEntity::class], version = 3, exportSchema = false)
 abstract class CardDatabase : RoomDatabase() {
     abstract fun cardDao(): CardDao
 
@@ -24,6 +24,6 @@ abstract class CardDatabase : RoomDatabase() {
                 context.applicationContext,
                 CardDatabase::class.java,
                 "card_database"
-            ).build()
+            ).fallbackToDestructiveMigration().build()
     }
 }

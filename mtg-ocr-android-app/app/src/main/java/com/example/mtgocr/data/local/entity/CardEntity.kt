@@ -12,7 +12,13 @@ data class CardEntity(
     val language: String,
     @ColumnInfo(name = "collector_number") val collectorNumber: String,
     @ColumnInfo(name = "set_code") val setCode: String,
-    @ColumnInfo(name = "year_of_print") val yearOfPrint: Int
+    @ColumnInfo(name = "set_name") val setName: String,
+    @ColumnInfo(name = "year_of_print") val yearOfPrint: Int,
+    @ColumnInfo(name = "cardmarket_id") val cardMarketId: Int? = null,
+    // mask fields
+    val foil: Boolean = false,
+    val signed: Boolean = false,
+    val condition: String = "NM"
 )
 
 fun CardEntity.toDomain(): CardDetails = CardDetails(
@@ -21,7 +27,12 @@ fun CardEntity.toDomain(): CardDetails = CardDetails(
     language = language,
     collectorNumber = collectorNumber,
     setCode = setCode,
-    yearOfPrint = yearOfPrint
+    setName = setName,
+    yearOfPrint = yearOfPrint,
+    cardMarketId = cardMarketId,
+    foil = foil,
+    signed = signed,
+    condition = condition
 )
 
 fun CardDetails.toEntity(): CardEntity = CardEntity(
@@ -30,5 +41,10 @@ fun CardDetails.toEntity(): CardEntity = CardEntity(
     language = language,
     collectorNumber = collectorNumber,
     setCode = setCode,
-    yearOfPrint = yearOfPrint
+    setName = setName,
+    yearOfPrint = yearOfPrint,
+    cardMarketId = cardMarketId,
+    foil = foil,
+    signed = signed,
+    condition = condition
 )
